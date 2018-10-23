@@ -8,6 +8,7 @@ public class Contato implements Serializable{
     private String nome;
     private String fone;
     private String email;
+    private int favorite;
 
     public Contato()
     {
@@ -36,6 +37,12 @@ public class Contato implements Serializable{
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public int getFavorite() {
+        return favorite;
+    }
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
     }
 }
 

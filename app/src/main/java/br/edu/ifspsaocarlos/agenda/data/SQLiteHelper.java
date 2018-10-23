@@ -10,7 +10,8 @@ class SQLiteHelper extends SQLiteOpenHelper {
     static final String KEY_NAME = "nome";
     static final String KEY_FONE = "fone";
     static final String KEY_EMAIL = "email";
-    private static final int DATABASE_VERSION = 1;
+    static final String KEY_FAVORITE = "favorite";
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_CREATE = "CREATE TABLE "+ DATABASE_TABLE +" (" +
             KEY_ID  +  " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             KEY_NAME + " TEXT NOT NULL, " +
@@ -27,7 +28,14 @@ class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase database, int oldVersion, int    newVersion) {
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        if (oldVersion < 2 ){
+
+            final String UPDATE_COLUMN_FAVORITE = "Alter table contatos add column favorite integer";
+            database.execSQL(UPDATE_COLUMN_FAVORITE);
+        }
+
     }
 }
 

@@ -20,10 +20,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity{
 
     private ContatoAdapter adapter;
     private SearchView searchView;
+    private MenuItem menuFavorite;
 
     private FloatingActionButton fab;
 
@@ -119,7 +122,6 @@ public class MainActivity extends AppCompatActivity{
 
         ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
 
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,16 +134,23 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         searchView.setIconifiedByDefault(true);
-
 
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.showFavoritesMenuItem:
+                //Listar todos favoritos
+                Toast.makeText(this, "TODOS FAVORITOS", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,8 +160,6 @@ public class MainActivity extends AppCompatActivity{
              //   adapter.notifyItemInserted(adapter.getItemCount());
                 updateUI(null);
             }
-
-
 
         if (requestCode == 2) {
             if (resultCode == RESULT_OK)

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import br.edu.ifspsaocarlos.agenda.adapter.ContatoAdapter;
 import br.edu.ifspsaocarlos.agenda.data.ContatoDAO;
@@ -83,6 +84,13 @@ public class DetalheActivity extends AppCompatActivity {
         String name = ((EditText) findViewById(R.id.editTextNome)).getText().toString();
         String fone = ((EditText) findViewById(R.id.editTextFone)).getText().toString();
         String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+        int favorito = 0;
+
+        //Estado favorito
+//        Switch fild_favorite = (Switch) findViewById(R.id.switchFavorite);
+//        if (fild_favorite.isChecked()){
+//            favorito = 1;
+//        }
 
         if (c==null)
             c = new Contato();
@@ -91,6 +99,7 @@ public class DetalheActivity extends AppCompatActivity {
         c.setNome(name);
         c.setFone(fone);
         c.setEmail(email);
+//        c.setFavorite(favorito);
 
         cDAO.salvaContato(c);
         //c.setId(10);
