@@ -32,8 +32,8 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
         if (oldVersion < 2 ){
 
-            final String UPDATE_COLUMN_FAVORITE = "Alter table contatos add column favorite integer";
-            database.execSQL(UPDATE_COLUMN_FAVORITE);
+            final String sql = "ALTER TABLE "+ DATABASE_TABLE +" ADD COLUMN "+ KEY_FAVORITE +" integer";
+            database.execSQL(sql);
         }
 
     }

@@ -24,14 +24,23 @@
             android:gravity="center_vertical"
             />
 
-        <ImageView
+        <CheckBox
             android:id="@+id/favorite_imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/ic_star_border_yellow"
             android:layout_gravity="right|center_vertical"
             android:background="@drawable/ic_star_border_yellow"
+            android:checked="false"
+            />
+
+        <!--
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:clickable="true"
             />
+        -->
 
     </android.support.v7.widget.CardView>
 
