@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
         if (!searchView.isIconified()) {
 
             searchView.onActionViewCollapsed();
-            updateUI(null);
+            updateUI(null, false);
         } else {
             super.onBackPressed();
         }
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity{
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             searchView.clearFocus();
-            updateUI(query);
+            updateUI(query, false);
 
         }
     }
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        updateUI(null);
+        updateUI(null, false);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity{
                     searchView.onActionViewCollapsed();
 
                 searchView.setQuery("", false);
-                updateUI(null);
+                updateUI(null, false);
             }
         });
 
@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId()){
             case R.id.showFavoritesMenuItem:
                 //Listar todos favoritos
+                updateUI(null, true);//passa o parametro 'true' para buscar apenas os Favoritos
                 Toast.makeText(this, "TODOS FAVORITOS", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity{
             if (resultCode == RESULT_OK) {
                 showSnackBar(getResources().getString(R.string.contato_adicionado));
              //   adapter.notifyItemInserted(adapter.getItemCount());
-                updateUI(null);
+                updateUI(null, false);
             }
 
         if (requestCode == 2) {
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-            updateUI(null);
+            updateUI(null, false);
         }
     }
 
@@ -182,23 +183,24 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-    private void updateUI(String nomeContato)
+    private void updateUI(String nomeContato, boolean findFav)
     {
-
         contatos.clear();
 
-        if (nomeContato==null) {
+        if (findFav){
+            contatos.addAll(cDAO.exibeContatosFavoritos());
+            empty.setText(getResources().getString(R.string.lista_vazia));
+            fab.show();
+        }
+        else if (nomeContato==null) {
             contatos.addAll(cDAO.buscaTodosContatos());
             empty.setText(getResources().getString(R.string.lista_vazia));
             fab.show();
-
         }
         else {
             contatos.addAll(cDAO.buscaContato(nomeContato));
             empty.setText(getResources().getString(R.string.contato_nao_encontrado));
             fab.hide();
-
-
         }
 
         recyclerView.getAdapter().notifyDataSetChanged();

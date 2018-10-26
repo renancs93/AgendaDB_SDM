@@ -32,7 +32,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
         if (oldVersion < 2 ){
 
-            final String sql = "ALTER TABLE "+ DATABASE_TABLE +" ADD COLUMN "+ KEY_FAVORITE +" integer";
+            final String sql = "ALTER TABLE "+ DATABASE_TABLE +" ADD COLUMN "+ KEY_FAVORITE +" integer NOT NULL DEFAULT 0";
             database.execSQL(sql);
         }
 

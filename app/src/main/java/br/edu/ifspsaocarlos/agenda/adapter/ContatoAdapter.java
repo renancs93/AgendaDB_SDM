@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import br.edu.ifspsaocarlos.agenda.data.ContatoDAO;
 import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
 
@@ -25,11 +26,9 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
 
     private static List<Contato> contatos;
     private Context context;
-
+    private ContatoDAO cDAO;
 
     private static ItemClickListener clickListener;
-
-
 
     public ContatoAdapter(List<Contato> contatos, Context context) {
         this.contatos = contatos;
@@ -46,13 +45,21 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
     @Override
     public void onBindViewHolder(ContatoViewHolder holder, int position) {
        holder.nome.setText(contatos.get(position).getNome());
+
+       //Informação de contato favorito
+       if (contatos.get(position).getFavorite() == 1){
+           holder.favoriteIcon.setChecked(true);
+       }
+       else {
+           holder.favoriteIcon.setChecked(false);
+       }
+
     }
 
     @Override
     public int getItemCount() {
         return contatos.size();
     }
-
 
     public void setClickListener(ItemClickListener itemClickListener) {
         clickListener = itemClickListener;
@@ -85,22 +92,12 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
                         favoriteIcon.setButtonDrawable(R.drawable.ic_star_border_yellow);
                         Toast.makeText(context, "Removido dos Favoritos", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
 
-            /*
-            favoriteIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    final boolean state = favoriteIcon.isChecked();
-
-
+                    //Chama função que irá atualizar no banco de dados o status de Favorito
+                    atualizaFavoritos(getAdapterPosition(), isChecked==true?1:0);
 
                 }
             });
-
-            */
         }
 
         @Override
@@ -116,6 +113,18 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
         void onItemClick(int position);
     }
 
+    public interface ItemFavoriteChange {
+        void onFavoriteChange(int position,int favorito);
+    }
+
+    void atualizaFavoritos(int position, int favorito){
+
+        Contato c = new Contato();
+        c.setId(contatos.get(position).getId());
+        c.setFavorite(favorito);
+
+        cDAO = new ContatoDAO(context);
+        cDAO.addOurRemoveFavorite(c);
+    }
+
 }
-
-

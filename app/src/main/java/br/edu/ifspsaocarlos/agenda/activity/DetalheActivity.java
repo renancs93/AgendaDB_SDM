@@ -30,12 +30,20 @@ public class DetalheActivity extends AppCompatActivity {
         if (getIntent().hasExtra("contato"))
         {
             this.c = (Contato) getIntent().getSerializableExtra("contato");
+
             EditText nameText = (EditText)findViewById(R.id.editTextNome);
             nameText.setText(c.getNome());
+
             EditText foneText = (EditText)findViewById(R.id.editTextFone);
             foneText.setText(c.getFone());
+
             EditText emailText = (EditText)findViewById(R.id.editTextEmail);
             emailText.setText(c.getEmail());
+
+            int fav = c.getFavorite();
+            Switch favoriteSwitch = (Switch)findViewById(R.id.switchFavorite);
+            favoriteSwitch.setChecked(fav == 1?true:false);
+
             int pos =c.getNome().indexOf(" ");
             if (pos==-1)
                 pos=c.getNome().length();
@@ -84,13 +92,14 @@ public class DetalheActivity extends AppCompatActivity {
         String name = ((EditText) findViewById(R.id.editTextNome)).getText().toString();
         String fone = ((EditText) findViewById(R.id.editTextFone)).getText().toString();
         String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
-        int favorito = 0;
+
+        Switch field_favorite = (Switch) findViewById(R.id.switchFavorite);
 
         //Estado favorito
-//        Switch fild_favorite = (Switch) findViewById(R.id.switchFavorite);
-//        if (fild_favorite.isChecked()){
-//            favorito = 1;
-//        }
+        int favorito = 0;
+        if (field_favorite.isChecked()){
+            favorito = 1;
+        }
 
         if (c==null)
             c = new Contato();
@@ -99,7 +108,7 @@ public class DetalheActivity extends AppCompatActivity {
         c.setNome(name);
         c.setFone(fone);
         c.setEmail(email);
-//        c.setFavorite(favorito);
+        c.setFavorite(favorito);
 
         cDAO.salvaContato(c);
         //c.setId(10);
