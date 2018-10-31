@@ -11,7 +11,8 @@ class SQLiteHelper extends SQLiteOpenHelper {
     static final String KEY_FONE = "fone";
     static final String KEY_EMAIL = "email";
     static final String KEY_FAVORITE = "favorite";
-    private static final int DATABASE_VERSION = 2;
+    static final String KEY_BIRTHDAY = "birthday";
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_CREATE = "CREATE TABLE "+ DATABASE_TABLE +" (" +
             KEY_ID  +  " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             KEY_NAME + " TEXT NOT NULL, " +
@@ -33,6 +34,10 @@ class SQLiteHelper extends SQLiteOpenHelper {
         if (oldVersion < 2 ){
 
             final String sql = "ALTER TABLE "+ DATABASE_TABLE +" ADD COLUMN "+ KEY_FAVORITE +" integer NOT NULL DEFAULT 0";
+            database.execSQL(sql);
+        }
+        if (oldVersion < 3){
+            final String sql = "ALTER TABLE "+ DATABASE_TABLE +" ADD COLUMN "+ KEY_BIRTHDAY +" text";
             database.execSQL(sql);
         }
 

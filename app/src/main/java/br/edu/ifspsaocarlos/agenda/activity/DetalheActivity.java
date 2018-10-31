@@ -1,13 +1,21 @@
 package br.edu.ifspsaocarlos.agenda.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import java.text.DecimalFormat;
+import java.util.Calendar;
 
 import br.edu.ifspsaocarlos.agenda.adapter.ContatoAdapter;
 import br.edu.ifspsaocarlos.agenda.data.ContatoDAO;
@@ -15,9 +23,12 @@ import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
 
 
-public class DetalheActivity extends AppCompatActivity {
+public class DetalheActivity extends AppCompatActivity implements View.OnClickListener {
     private Contato c;
     private ContatoDAO cDAO;
+
+    private EditText nameText, foneText, emailText, dateText;
+    private ImageButton imageButtonCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,18 +38,22 @@ public class DetalheActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        nameText = (EditText)findViewById(R.id.editTextNome);
+        foneText = (EditText)findViewById(R.id.editTextFone);
+        emailText = (EditText)findViewById(R.id.editTextEmail);
+        dateText = (EditText)findViewById(R.id.editTexDate);
+
+        imageButtonCalendar = (ImageButton)findViewById(R.id.imageButtonCalendar);
+        imageButtonCalendar.setOnClickListener(this);
+
         if (getIntent().hasExtra("contato"))
         {
             this.c = (Contato) getIntent().getSerializableExtra("contato");
 
-            EditText nameText = (EditText)findViewById(R.id.editTextNome);
             nameText.setText(c.getNome());
-
-            EditText foneText = (EditText)findViewById(R.id.editTextFone);
             foneText.setText(c.getFone());
-
-            EditText emailText = (EditText)findViewById(R.id.editTextEmail);
             emailText.setText(c.getEmail());
+            dateText.setText(c.getBirthday());
 
             int fav = c.getFavorite();
             Switch favoriteSwitch = (Switch)findViewById(R.id.switchFavorite);
@@ -89,33 +104,95 @@ public class DetalheActivity extends AppCompatActivity {
 
     private void salvar()
     {
-        String name = ((EditText) findViewById(R.id.editTextNome)).getText().toString();
-        String fone = ((EditText) findViewById(R.id.editTextFone)).getText().toString();
-        String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+        if (validarCampos()) {
 
-        Switch field_favorite = (Switch) findViewById(R.id.switchFavorite);
+            String name = nameText.getText().toString();
+            String fone = foneText.getText().toString();
+            String email = emailText.getText().toString();
 
-        //Estado favorito
-        int favorito = 0;
-        if (field_favorite.isChecked()){
-            favorito = 1;
+            Switch field_favorite = (Switch) findViewById(R.id.switchFavorite);
+            String birthday = dateText.getText().toString();
+
+            //Estado favorito
+            int favorito = 0;
+            if (field_favorite.isChecked()) {
+                favorito = 1;
+            }
+
+            if (c == null)
+                c = new Contato();
+
+            c.setNome(name);
+            c.setFone(fone);
+            c.setEmail(email);
+            c.setFavorite(favorito);
+            c.setBirthday(birthday);
+
+            cDAO.salvaContato(c);
+            //c.setId(10);
+            //ContatoAdapter.Adiciona(c);
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }
+        else {
+            Toast.makeText(this, "Campos Obrigatórios: \n"+
+                                            getString(R.string.nome)+
+                                            "\n"+getString(R.string.fone),
+                            Toast.LENGTH_SHORT)
+                    .show();
         }
 
-        if (c==null)
-            c = new Contato();
+    }
+
+    public boolean validarCampos(){
+
+        boolean ok = true;
+
+        if (nameText.getText().toString().trim().equals("") || foneText.getText().toString().trim().equals("")){
+            ok = false;
+        }
+
+        return ok;
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+
+            case R.id.imageButtonCalendar:
+                openCalendarDialog();
+
+        }
+    }
+
+    private void openCalendarDialog() {
+
+        // calender class's instance and get current date , month and year from calender
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR); // current year
+        int mMonth = c.get(Calendar.MONTH); // current month
+        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
+                        DecimalFormat df = new DecimalFormat("00");
+
+                        dateText.setText(df.format(day)
+                                        + "/" + (df.format(month + 1))
+                                        +"/" + year);
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
 
 
-        c.setNome(name);
-        c.setFone(fone);
-        c.setEmail(email);
-        c.setFavorite(favorito);
+        //Toast.makeText(this, "Calendário", Toast.LENGTH_SHORT).show();
 
-        cDAO.salvaContato(c);
-        //c.setId(10);
-        //ContatoAdapter.Adiciona(c);
-        Intent resultIntent = new Intent();
-        setResult(RESULT_OK,resultIntent);
-        finish();
     }
 }
 

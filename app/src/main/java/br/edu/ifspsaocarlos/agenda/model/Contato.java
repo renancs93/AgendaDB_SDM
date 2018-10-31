@@ -10,6 +10,8 @@ public class Contato implements Serializable{
     private String email;
     private int favorite;
 
+    private String birthday;
+
     public Contato()
     {
     }
@@ -43,6 +45,12 @@ public class Contato implements Serializable{
     }
     public void setFavorite(int favorite) {
         this.favorite = favorite;
+    }
+    public String getBirthday() {
+        return birthday;
+    }
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }
 

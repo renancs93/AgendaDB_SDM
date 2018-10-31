@@ -98,6 +98,7 @@
             android:orientation="horizontal"
             >
             <EditText
+                android:id="@+id/editTexDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
