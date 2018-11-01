@@ -74,7 +74,7 @@ public class ContatoDAO {
         return contatos;
     }
 
-    public  List<Contato> buscaContato(String nome)
+    public  List<Contato> buscaContato(String pesquisa)
     {
         database=dbHelper.getReadableDatabase();
         List<Contato> contatos = new ArrayList<>();
@@ -82,8 +82,8 @@ public class ContatoDAO {
         Cursor cursor;
 
         String[] cols=new String[] {SQLiteHelper.KEY_ID,SQLiteHelper.KEY_NAME, SQLiteHelper.KEY_FONE, SQLiteHelper.KEY_EMAIL, SQLiteHelper.KEY_FAVORITE, SQLiteHelper.KEY_BIRTHDAY};
-        String where=SQLiteHelper.KEY_NAME + " like ?";
-        String[] argWhere=new String[]{"%" + nome + "%"};
+        String where=SQLiteHelper.KEY_NAME + " LIKE ?" +" OR "+ SQLiteHelper.KEY_EMAIL+" LIKE ?";
+        String[] argWhere=new String[]{"%" + pesquisa + "%", "%" + pesquisa + "%"};
 
 
         cursor = database.query(SQLiteHelper.DATABASE_TABLE, cols, where , argWhere,
@@ -180,7 +180,7 @@ public class ContatoDAO {
 
     }
 
-    public void addOurRemoveFavorite(Contato c) {
+    public void addOrRemoveFavorite(Contato c) {
 
         database=dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

@@ -1,17 +1,12 @@
 package br.edu.ifspsaocarlos.agenda.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -124,7 +119,7 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
         c.setFavorite(favorito);
 
         cDAO = new ContatoDAO(context);
-        cDAO.addOurRemoveFavorite(c);
+        cDAO.addOrRemoveFavorite(c);
     }
 
 }

@@ -5,19 +5,22 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-import br.edu.ifspsaocarlos.agenda.adapter.ContatoAdapter;
 import br.edu.ifspsaocarlos.agenda.data.ContatoDAO;
 import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
@@ -28,7 +31,10 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
     private ContatoDAO cDAO;
 
     private EditText nameText, foneText, emailText, dateText;
-    private ImageButton imageButtonCalendar;
+    private ImageButton imageButtonCalendar, imageButtonAddFone;
+    private TextView textViewBirthday;
+
+    private LinearLayout telefoneLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +44,38 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        textViewBirthday = (TextView)findViewById(R.id.textViewBirthday);
+        textViewBirthday.setText(getString(R.string.aniversario) + " " + getString(R.string.dia_mes));
+
         nameText = (EditText)findViewById(R.id.editTextNome);
         foneText = (EditText)findViewById(R.id.editTextFone);
+
         emailText = (EditText)findViewById(R.id.editTextEmail);
         dateText = (EditText)findViewById(R.id.editTexDate);
 
         imageButtonCalendar = (ImageButton)findViewById(R.id.imageButtonCalendar);
         imageButtonCalendar.setOnClickListener(this);
 
+        imageButtonAddFone = (ImageButton)findViewById(R.id.btnAddFone);
+        imageButtonAddFone.setOnClickListener(this);
+
+        telefoneLinearLayout = findViewById(R.id.linearLayoutAddNewPhones);
+
         if (getIntent().hasExtra("contato"))
         {
             this.c = (Contato) getIntent().getSerializableExtra("contato");
 
             nameText.setText(c.getNome());
-            foneText.setText(c.getFone());
+
+            String multFones[] = c.getFone().split(";");
+            if (multFones.length <= 1){
+                foneText.setText(multFones[0]);
+            }
+            else{
+                foneText.setText(multFones[0]);
+                addNewFone(multFones);
+            }
+
             emailText.setText(c.getEmail());
             dateText.setText(c.getBirthday());
 
@@ -119,6 +143,10 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
                 favorito = 1;
             }
 
+            if (telefoneLinearLayout.getChildCount() > 0){
+                fone = getMultFones(fone);
+            }
+
             if (c == null)
                 c = new Contato();
 
@@ -163,8 +191,72 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.imageButtonCalendar:
                 openCalendarDialog();
+                break;
+            case R.id.btnAddFone:
+                addNewFone(null);
+                break;
+            case R.id.imageButtonDelNewFone:
+                removeViewNewFone(telefoneLinearLayout);
+                break;
+
 
         }
+    }
+
+    public String getMultFones(String fone){
+
+        String fones = fone;
+
+        for (int i=0 ; i<telefoneLinearLayout.getChildCount() ; i++){
+
+            View view = telefoneLinearLayout.getChildAt(i);
+
+            EditText newFone = view.findViewById(R.id.editTextNewFone);
+            fones = fones+";"+newFone.getText().toString();
+
+        }
+
+        return fones;
+    }
+
+    private void removeViewNewFone(View view) {
+
+        ViewGroup parent = (ViewGroup) view.getParent();
+        parent.removeView(view);
+
+        Toast.makeText(this, "Removido Telefone", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void addNewFone(String[] fones) {
+
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View newFoneLayout = null;
+        ImageButton imageButtonDel;
+
+        if (null != fones){
+
+            //para iniciar a partir do primeiro telefone Extra
+            for (int i=1 ; i<fones.length ; i++){
+
+                newFoneLayout = layoutInflater.inflate(R.layout.layout_new_fone, null);
+                telefoneLinearLayout.addView(newFoneLayout);
+
+                EditText newFone = newFoneLayout.findViewById(R.id.editTextNewFone);
+                newFone.setText(fones[i]);
+
+                imageButtonDel = newFoneLayout.findViewById(R.id.imageButtonDelNewFone);
+                imageButtonDel.setOnClickListener(this);
+            }
+        }
+        else{
+            newFoneLayout = layoutInflater.inflate(R.layout.layout_new_fone, null);
+            telefoneLinearLayout.addView(newFoneLayout);
+
+            imageButtonDel = newFoneLayout.findViewById(R.id.imageButtonDelNewFone);
+            imageButtonDel.setOnClickListener(this);
+        }
+
     }
 
     private void openCalendarDialog() {
@@ -183,15 +275,12 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
                         DecimalFormat df = new DecimalFormat("00");
 
                         dateText.setText(df.format(day)
-                                        + "/" + (df.format(month + 1))
-                                        +"/" + year);
+                                        + "/" + (df.format(month + 1)));
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
 
-
-        //Toast.makeText(this, "Calendário", Toast.LENGTH_SHORT).show();
 
     }
 }
