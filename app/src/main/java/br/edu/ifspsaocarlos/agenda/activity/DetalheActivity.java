@@ -196,7 +196,7 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
                 addNewFone(null);
                 break;
             case R.id.imageButtonDelNewFone:
-                removeViewNewFone(telefoneLinearLayout);
+                removeViewNewFone(view);
                 break;
 
 
@@ -219,10 +219,11 @@ public class DetalheActivity extends AppCompatActivity implements View.OnClickLi
         return fones;
     }
 
-    private void removeViewNewFone(View view) {
+    private void removeViewNewFone(View v) {
 
-        ViewGroup parent = (ViewGroup) view.getParent();
-        parent.removeView(view);
+
+        telefoneLinearLayout.removeView((View) v.getParent());
+        //((ViewGroup) view.getParent()).removeView(view);
 
         Toast.makeText(this, "Removido Telefone", Toast.LENGTH_SHORT).show();
 
