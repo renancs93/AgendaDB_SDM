@@ -17,6 +17,8 @@ class SQLiteHelper extends SQLiteOpenHelper {
             KEY_ID  +  " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             KEY_NAME + " TEXT NOT NULL, " +
             KEY_FONE + " TEXT, "  +
+            KEY_FAVORITE + " INTEGER, "  +
+            KEY_BIRTHDAY + " TEXT, "  +
             KEY_EMAIL + " TEXT);";
 
     SQLiteHelper(Context context) {
@@ -41,6 +43,11 @@ class SQLiteHelper extends SQLiteOpenHelper {
             database.execSQL(sql);
         }
 
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        super.onDowngrade(db, oldVersion, newVersion);
     }
 }
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AgendaDB_SDM.iml" filepath="$PROJECT_DIR$/AgendaDB_SDM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AgendaSQLite.iml" filepath="$PROJECT_DIR$/AgendaSQLite.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
